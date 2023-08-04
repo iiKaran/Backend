@@ -123,5 +123,14 @@ const sendOtp = async( req , res)=>{
       message:"Otp sent succesfullty"
    })
 }
-module.exports = { signUp, logIn, sendOtp};
+const loggedInUser=async(req,res)=>{
+   const {email,token}=req.user
+   const existingUser = await userModel.findOne({ email: email });
+   existingUser.password=undefined;
+   return res.json({
+     user:existingUser
+   })
+}
+module.exports = {signUp, logIn, sendOtp, loggedInUser};
+
 

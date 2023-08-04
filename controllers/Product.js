@@ -462,3 +462,22 @@ exports.allProductsOfCategory = async(req, res)=>{
   })
  }
 }
+exports.getProduct = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const product = await Product.findById(id);
+
+    if (!product) {
+      return next(new ErrorHandler(`No Such Product found`, 404));
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Product Found successfully",
+      product,
+    });
+  } catch (e) {
+    console.log(e.message);
+  }
+};
