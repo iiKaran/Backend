@@ -323,7 +323,11 @@ exports.getCart = async( req , res)=>{
    //push the product id to the cart of the user so we also need the user id 
    const userId = req.user.id ; 
    
-   const CartDetails = await User.findById(userId).populate("mycart");
+   const CartDetails = await User.findById(userId).populate({ path: 'mycart',
+   populate: {
+     path: 'photos',
+     // model: 'ImageColor'
+   }});
   
   return res.status(200).json({
    success:true , 
