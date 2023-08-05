@@ -290,8 +290,8 @@ exports.removeFromCart = async( req , res)=>{
   
    //push the product id to the cart of the user so we also need the user id 
    const userId = req.user.id ; 
-   const{productId} = req.body; 
-
+   const productId = req.params.id; 
+  console.log(productId)
    // validate the product 
    if(!productId){
     return res.status(404).json({
