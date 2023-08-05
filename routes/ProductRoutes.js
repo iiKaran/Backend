@@ -15,8 +15,8 @@ router.get("/category-products", allProductsOfCategory); // checked
 router.put("/likeProduct",auth, likeProduct); // checked
 router.get("/all-liked-products",auth ,getlikedProducts) // checked
 router.post("/add-Image",putImage); // checked
-router.get("/getImageOfColor", getImageOfColor);
-router.post("/add-to-wishlist", auth ,addToWishlist); 
-router.get("/get-wishlist",auth, getWishlist); 
-router.get("/get-product",getProduct); 
+router.get("/getImageOfColor", getImageOfColor); // checked
+router.post("/add-to-wishlist", auth ,addToWishlist); // checked
+router.post("/get-wishlist",auth, getWishlist); // checked
+router.get("/:id",getProduct); 
 module.exports = router; 

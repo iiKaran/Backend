@@ -325,8 +325,8 @@ exports.getCart = async( req , res)=>{
    
    const CartDetails = await User.findById(userId).populate("mycart");
   
-  return res.status(500).json({
-   success:false , 
+  return res.status(200).json({
+   success:true , 
    message:"get cart details", 
    data:CartDetails.mycart
   })
@@ -370,11 +370,16 @@ exports.addToWishlist = async( req , res) =>{
 exports.getWishlist = async(req , res)=>{
      try{
       const userId = req.user.id ; 
-      const FetchedCart = await User.findById(userId).populate("wishlist");
+      console.log("user id")
+      const FetchedCart = await User.findById(userId).populate({ path: 'wishlist',
+      populate: {
+        path: 'photos',
+        // model: 'ImageColor'
+      }});
       return res.status(200).json({
         success:true, 
         message:"Cart Fetched Successfully", 
-        data:FetchedCart
+        data:FetchedCart.wishlist
       })
      }
      catch(err){
@@ -466,10 +471,13 @@ exports.getProduct = async (req, res) => {
   try {
     const id = req.params.id;
 
-    const product = await Product.findById(id);
+    const product = await Product.findById(id).populate("photos");
 
     if (!product) {
-      return next(new ErrorHandler(`No Such Product found`, 404));
+      // return next(new ErrorHandler(`No Such Product found`, 404)); 
+      return res.status(404).json({
+        message:"no product found"
+      })
     }
 
     res.status(200).json({
