@@ -378,7 +378,7 @@ exports.getWishlist = async(req , res)=>{
       }});
       return res.status(200).json({
         success:true, 
-        message:"Cart Fetched Successfully", 
+        message:"wishlist Fetched Successfully", 
         data:FetchedCart.wishlist
       })
      }
@@ -389,6 +389,25 @@ exports.getWishlist = async(req , res)=>{
         message:"Error while fetching the wishlist"
       })
      }
+}
+exports.getWishlistIds = async(req , res)=>{
+  try{
+   const userId = req.user.id ; 
+   console.log("user id")
+   const FetchedCart = await User.findById(userId).populate("wishlist","_id");
+   return res.status(200).json({
+     success:true, 
+     message:"wishlist ids Fetched Successfully", 
+     data:FetchedCart.wishlist
+   })
+  }
+  catch(err){
+   console.log(err);
+   return res.status(500).json({
+     success: false, 
+     message:"Error while fetching the wishlist ids"
+   })
+  }
 }
 
 // add category
