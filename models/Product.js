@@ -26,10 +26,10 @@ const productSchema = new mongoose.Schema ({
       type:String , 
       trim : true,
      },
-     customization:{
+     customization:[{
       type:String , 
       trim : true,
-     }, 
+     }], 
      sku:{
       type:String , 
       trim : true,

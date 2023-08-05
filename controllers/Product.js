@@ -9,10 +9,8 @@ const {uploadImagetoCloudinary} = require("../utils/ImageUploader");
 exports.addProduct = async (req, res) => {
 
  try {
-  const { name, description, category, price, offerprice, status } = req.body;
-
+  const { name, description, category, price, offerprice, status} = req.body;
   const userId = req.user.id;
-
   console.log(userId);
   availble = true
   if (status) {
