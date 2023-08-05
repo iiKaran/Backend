@@ -16,7 +16,7 @@ const UserSchema = mongoose.Schema({
     },
     mycart:[{
         type: mongoose.Schema.Types.ObjectId, 
-        ref: "Product"
+        ref: "CartItem"
     }], 
     likedProduct:[
        {

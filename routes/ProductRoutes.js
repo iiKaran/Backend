@@ -8,7 +8,7 @@ router.delete("/delete-product",auth,deleteProduct); // checked
 router.get("/all-products",getAllProducts); // checked
 router.put("/update-price",auth,changePrice); // checked
 router.post("/add-to-cart",auth ,addToCart); // checked
-router.delete("/remove-from-cart/:id",auth, removeFromCart); // checked
+router.post("/remove-from-cart/:id",auth, removeFromCart); // checked
 router.post("/cart",auth,getCart); // checked
 router.delete("/delete-category",deleteCategory); // checked
 router.get("/category-products", allProductsOfCategory); // checked 

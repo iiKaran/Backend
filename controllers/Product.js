@@ -1,6 +1,7 @@
 const Product = require("../models/Product");
 const Category = require("../models/Category");
 const User = require("../models/User");
+const CartItem = require("../models/CartItem");
 const ImageColor = require("../models/ImageColor");
 const {uploadImagetoCloudinary} = require("../utils/ImageUploader"); 
 // add product 
@@ -252,10 +253,9 @@ exports.getImageOfColor = async(req , res)=>{
 // add product to cart
 exports.addToCart = async( req , res)=>{
  try{
-  
    //push the product id to the cart of the user so we also need the user id 
-   const userId = req.user.id ; 
-   const{productId} = req.body; 
+   const userId = req.user.id; 
+   const{productId,customization, colorImg , quantity} = req.body; 
    // validate the product 
    if(!productId){
     return res.status(404).json({
@@ -263,9 +263,15 @@ exports.addToCart = async( req , res)=>{
      message: "No product found"
     })
   }
+  const cartitem = await CartItem.create({
+    productId, 
+    customization, 
+    colorImg, 
+    quantity
+  });
    const updatedUser = await User.findByIdAndUpdate(userId,{
        $push:{
-        mycart:productId
+        mycart:cartitem._id
        }
    },{new:true})
 
@@ -323,16 +329,25 @@ exports.getCart = async( req , res)=>{
    //push the product id to the cart of the user so we also need the user id 
    const userId = req.user.id ; 
    
-   const CartDetails = await User.findById(userId).populate({ path: 'mycart',
-   populate: {
-     path: 'photos',
+   const CartDetails1 = await User.findById(userId).populate({ path: 'mycart',
+
+   populate:{
+     path: 'colorImg',
+    //  path:'productId'
      // model: 'ImageColor'
    }});
-  
+   const CartDetails2 = await User.findById(userId).populate({ path: 'mycart',
+
+   populate:{
+    //  path: 'colorImg',
+     path:'productId'
+     // model: 'ImageColor'
+   }});
   return res.status(200).json({
    success:true , 
    message:"get cart details", 
-   data:CartDetails.mycart
+   data1:CartDetails1.mycart,
+   data2:CartDetails2.mycart
   })
  }
  catch(err){
