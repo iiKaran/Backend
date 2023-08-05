@@ -358,7 +358,75 @@ exports.getCart = async( req , res)=>{
   })
  }
 }
-
+exports.increaseQuantity = async(req , res) => {
+  try{
+      const cartItemId = req.params.id ; 
+      const itemCheck = await CartItem.findById(cartItemId);
+      if(!itemCheck)
+      {
+        return res.json(404).json({
+          success:false , 
+          message:"Not found product"
+         })
+      }
+      const findItem = await CartItem.findByIdAndUpdate(
+       cartItemId, 
+        { $inc: { quantity: 1 } },
+        { new: true }
+      );
+      return res.status(200).json({
+        success:true, 
+        message:"Quantity Increased"
+       })
+  }
+  catch(err){
+     console.log(err); 
+     return res.json(500).json({
+      success:false , 
+      message:"Error While increasing the Quantity"
+     })
+  }
+}
+exports.decreaseQuantity = async(req , res) => {
+  try{
+      const cartItemId = req.params.id ; 
+      const Item = await CartItem.findById(cartItemId);
+      
+      if(!Item)
+      {
+        return res.json(404).json({
+          success:false , 
+          message:"Not found product"
+         })
+      }
+      if(!(Item.quantity == 0))
+      {
+      const findItem = await CartItem.findByIdAndUpdate(
+        cartItemId, 
+        { $inc: { quantity: -1 } },
+        { new: true }
+      ); 
+      return res.status(200).json({
+        success:true, 
+        message:"Quantity decreased"
+       })
+      }
+   else{
+    const deltedItem = await CartItem.findByIdAndDelete(cartItemId); 
+    return res.status(200).json({
+      success:true, 
+      message:"Item deleted "
+     })
+   }
+  }
+  catch(err){
+     console.log(err); 
+     return res.status(500).json({
+      success:false , 
+      message:"Error While decreasing the Quantity"
+     })
+  }
+}
 // add to wishlist 
 exports.addToWishlist = async( req , res) =>{
   try{
