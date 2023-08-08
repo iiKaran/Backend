@@ -5,8 +5,10 @@ exports.getAllBlog = async(req, res)=>{
     try{
          
     const result = await Blog.find({}); 
+    console.log(result);
+
     return res.status(200).json({
-        success:false , 
+        success:true, 
         message:"Succesfully fetched", 
         data:result
     })
@@ -22,7 +24,7 @@ exports.getAllBlog = async(req, res)=>{
 }
 exports.getOneBlog = async(req, res)=>{
     try{
-      const blogId = req.body; 
+      const {blogId} = req.body; 
 
       const result = await Blog.findById(blogId); 
      
