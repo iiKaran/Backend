@@ -23,5 +23,5 @@ router.post("/get-wishlist-ids",auth, getWishlistIds);
 router.get("/:id",getProduct); 
 router.post("/increase/:id",increaseQuantity); 
 router.post("/decrease/:id",decreaseQuantity); 
-
+router.post("/isInList",auth,);
 module.exports = router; 
