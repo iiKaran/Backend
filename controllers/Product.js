@@ -614,3 +614,64 @@ exports.getProduct = async (req, res) => {
     console.log(e.message);
   }
 };
+
+exports.searchProduct = async(req, res)=>{
+  try{
+
+     const searchParam = req.params.key; 
+
+   console.log(searchParam)
+     const result = await Product.find({
+      $or:[
+        { "title": { $regex:searchParam} },
+        { "description": {$regex:searchParam } },
+        { "auction": { $regex:searchParam } }, 
+        { "material": {$regex:searchParam} }, 
+      ]
+     }).populate("photos");
+    
+    return res.status(200).json({
+      success:true, 
+      message:"success while searching", 
+      data:[result]
+    })
+  }
+
+  catch(err){
+    console.log(err); 
+    res.status(500).json({
+      success:false, 
+      message:"Error While searching"
+    })
+  }
+}
+exports.removeFromWishlist = async( req , res)=>{
+  try{
+   
+    //push the product id to the cart of the user so we also need the user id 
+    const userId = req.user.id ; 
+    const productId = req.params.id; 
+   console.log(productId)
+    // validate the product 
+    if(!productId){
+     return res.status(404).json({
+      success: false,
+      message: "No product found"
+     })
+   }
+    const updatedUser = await User.findByIdAndUpdate(userId, { $pull: {wishlist: productId}},{new:true})
+   return res.status(200).json({
+    success:true, 
+    message:"removed from wishlist", 
+    dat:updatedUser
+   })
+  }
+ 
+  catch(err){
+   console.log(err);
+   res.status(500).json({
+    success: false,
+    message: "Something went wrong while removing from wishlist"
+   })
+  }
+ }
