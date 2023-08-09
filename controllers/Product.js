@@ -449,6 +449,16 @@ exports.addToWishlist = async( req , res) =>{
       const {productId} = req.body; 
       const userId = req.user.id;
       console.log(userId)
+      const findUser = await User.findById(userId); 
+      
+      if(findUser.wishlist.includes(productId))
+      {
+        return res.status(200).json({
+          success:true , 
+          message:"already in the wishlist"
+        });
+      }
+
       const wishlistDetails = await User.findByIdAndUpdate(userId,{
        $push:{
         wishlist:productId
@@ -596,7 +606,6 @@ exports.getProduct = async (req, res) => {
     const product = await Product.findById(id).populate("photos");
     const cartItemFound = await CartItem.findOne({productId:id});
     
-    console.log(cartItemFound);
 
     if (!product) {
       // return next(new ErrorHandler(`No Such Product found`, 404)); 
@@ -609,6 +618,7 @@ exports.getProduct = async (req, res) => {
       success: true,
       message: "Product Found successfully",
       product,
+      cartItemFound:cartItemFound
     });
   } catch (e) {
     console.log(e.message);
