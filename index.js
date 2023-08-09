@@ -7,6 +7,7 @@ const productRoutes = require("./routes/ProductRoutes");
 const orderRoutes = require("./routes/OrderRoutes");
 const  clouldinaryConnect = require("./config/Cloudinary"); 
 const fileUpload = require("express-fileupload");
+const blogRoutes = require("./routes/BlogRoutes");
 const cors = require("cors"); 
 
 
@@ -28,6 +29,7 @@ clouldinaryConnect();
 app.use("/api/v1/auth",entryRoutes);
 app.use("/api/v1/product",productRoutes);
 app.use("/api/v1/order",orderRoutes);
+app.use("/api/v1/blogs",blogRoutes);
 app.listen(process.env.PORT,()=>{
  console.log("Server started succesfully"); 
 })

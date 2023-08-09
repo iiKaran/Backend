@@ -4,8 +4,25 @@ const User = require("../models/User");
 const CartItem = require("../models/CartItem");
 const ImageColor = require("../models/ImageColor");
 const {uploadImagetoCloudinary} = require("../utils/ImageUploader"); 
-// add product 
 
+
+// exports.checkCart = async(req , res) =>{
+//   try{
+//       const Id = req.body ; 
+      
+      
+//   }
+//   catch(err){
+//     console.log(err); 
+//     return res.status(500).json({
+//       message:"Error While checking", 
+//       success:false
+//     })
+//   }
+// }
+
+
+// add product 
 exports.addProduct = async (req, res) => {
 
  try {
@@ -327,25 +344,26 @@ exports.getCart = async( req , res)=>{
    //push the product id to the cart of the user so we also need the user id 
    const userId = req.user.id ; 
    
-   const CartDetails1 = await User.findById(userId).populate({ path: 'mycart',
-
-   populate:{
-     path: 'colorImg',
-    //  path:'productId'
-     // model: 'ImageColor'
-   }});
-   const CartDetails2 = await User.findById(userId).populate({ path: 'mycart',
-
-   populate:{
-    //  path: 'colorImg',
-     path:'productId'
-     // model: 'ImageColor'
-   }});
+   const CartDetails1 = await User.findById(userId).populate([
+    {
+      path: 'mycart',
+      populate: {
+        path: 'colorImg',
+        // model: 'ImageColor'
+      },
+    },
+    {
+      path: 'mycart',
+      populate: {
+        path: 'productId',
+        // model: 'Product'
+      },
+    },
+  ]);
   return res.status(200).json({
    success:true , 
    message:"get cart details", 
    data1:CartDetails1.mycart,
-   data2:CartDetails2.mycart
   })
  }
  catch(err){
@@ -576,6 +594,9 @@ exports.getProduct = async (req, res) => {
     const id = req.params.id;
 
     const product = await Product.findById(id).populate("photos");
+    const cartItemFound = await CartItem.findOne({productId:id});
+    
+    console.log(cartItemFound);
 
     if (!product) {
       // return next(new ErrorHandler(`No Such Product found`, 404)); 
