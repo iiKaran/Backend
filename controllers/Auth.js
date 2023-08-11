@@ -135,7 +135,7 @@ const loggedInUser=async(req,res)=>{
 
 const resetPassword = async(req, res)=>{
    try{
-       const {email, password, confirmPassword} = req.body ; 
+       const {otp,email, password, confirmPassword} = req.body ; 
        if(password !==  confirmPassword)
        {
            return res.status(400).json({
@@ -143,6 +143,14 @@ const resetPassword = async(req, res)=>{
             message:"Both password are different"
            })
        }
+       const recentOtp = await OTP.find({ email }).sort({ createdAt: -1 }).limit(1);
+      if(otp!=recentOtp)
+      {
+         return res.status(400).json({
+            success:false , 
+            message:"otp not ,match"
+         })
+      }
       const hashedPsw = await bcrypt.hash(password, 10); 
       const NewUser = await User.findOneAndUpdate({email:email},{
          password:hashedPsw

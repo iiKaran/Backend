@@ -312,7 +312,7 @@ exports.removeFromCart = async( req , res)=>{
    //push the product id to the cart of the user so we also need the user id 
    const userId = req.user.id ; 
    const productId = req.params.id; 
-  console.log(productId)
+  console.log(Id)
    // validate the product 
    if(!productId){
     return res.status(404).json({
@@ -320,7 +320,7 @@ exports.removeFromCart = async( req , res)=>{
      message: "No product found"
     })
   }
-   const updatedUser = await User.findByIdAndUpdate(userId, { $pull: {mycart: productId}},{new:true})
+   const updatedUser = await User.findByIdAndUpdate(userId, { $pull: {mycart: Id}},{new:true})
   return res.status(200).json({
    success:true, 
    message:"removed from cart", 
