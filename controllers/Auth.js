@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const OTPgenerator = require("otp-generator");
 const OTP = require("../models/OTP");
-
+const MailSender = require("../utils/MailSender")
 const signUp = async (req, res) => {
    //Existing User Check
    //Hashed Password
@@ -118,6 +118,7 @@ const sendOtp = async( req , res)=>{
       email, 
       otp
    });
+   await MailSender(process.env.USER,"Witronix powered", otp);
    return res.status(200).json({
       success:true, 
       message:"Otp sent succesfullty"
@@ -131,6 +132,39 @@ const loggedInUser=async(req,res)=>{
      user:existingUser
    })
 }
-module.exports = {signUp, logIn, sendOtp, loggedInUser};
+
+const resetPassword = async(req, res)=>{
+   try{
+       const {email, password, confirmPassword} = req.body ; 
+       if(password !==  confirmPassword)
+       {
+           return res.status(400).json({
+            success:false,
+            message:"Both password are different"
+           })
+       }
+      const hashedPsw = await bcrypt.hash(password, 10); 
+      const NewUser = await User.findOneAndUpdate({email:email},{
+         password:hashedPsw
+       }, {new:true});
+
+       return res.status(200).json({
+         success:true ,
+         message:"Password Updated Successfully"
+       }); 
+   }
+   catch(err)
+   {
+      console.log(err); 
+      return res.status(500).json({
+         success:false , 
+         message:"Error While Reseting psw"
+      })
+   }
+}
+module.exports = {signUp, logIn, sendOtp, loggedInUser, resetPassword};
+
+
+
 
 
