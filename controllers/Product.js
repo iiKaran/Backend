@@ -632,29 +632,60 @@ exports.allProductsOfCategory = async(req, res)=>{
 exports.getProduct = async (req, res) => {
   try {
     const id = req.params.id;
-
     const product = await Product.findById(id).populate("photos");
     const cartItemFound = await CartItem.findOne({productId:id});
+    const userId = req.user.id ; 
     
-
     if (!product) {
       // return next(new ErrorHandler(`No Such Product found`, 404)); 
       return res.status(404).json({
         message:"no product found"
       })
     }
+    else if(!cartItemFound)
+    {
+     return res.status(200).json({
+      success: true,
+      message: "Product Found successfully",
+      product,
+      cartItemFound:false
+    })
 
+    const findUser = await User.findById(userId); 
+    let check = findUser.mycart.includes(cartItemFound); 
     res.status(200).json({
       success: true,
       message: "Product Found successfully",
       product,
-      cartItemFound:cartItemFound
+      cartItemFound:check
     });
-  } catch (e) {
+  }
+}
+  catch (e) {
     console.log(e.message);
   }
 };
-
+exports.getProductWithoutAuth = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const product = await Product.findById(id).populate("photos");
+  
+    if (!product) {
+      // return next(new ErrorHandler(`No Such Product found`, 404)); 
+      return res.status(404).json({
+        message:"no product found"
+      })
+    }
+    return res.status(200).json({
+      success:true, 
+      message:"fetched", 
+      product
+    })
+}
+  catch (e) {
+    console.log(e.message);
+  }
+};
 exports.searchProduct = async(req, res)=>{
   try{
 
