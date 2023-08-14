@@ -270,6 +270,7 @@ exports.addToCart = async( req , res)=>{
  try{
    //push the product id to the cart of the user so we also need the user id 
    const userId = req.user.id; 
+  
    const{productId,customization, colorImg , quantity} = req.body; 
    // validate the product 
    if(!productId){
@@ -277,6 +278,15 @@ exports.addToCart = async( req , res)=>{
      success: false,
      message: "No product found"
     })
+  }
+  const findUser = await User.findById(userId); 
+      
+  if(findUser.mycart.includes(productId))
+  {
+    return res.status(200).json({
+      success:true , 
+      message:"already in the cart"
+    });
   }
   const cartitem = await CartItem.create({
     productId, 
@@ -311,20 +321,21 @@ exports.removeFromCart = async( req , res)=>{
   
    //push the product id to the cart of the user so we also need the user id 
    const userId = req.user.id ; 
-   const productId = req.params.id; 
+   const Id= req.params.id; 
   console.log(Id)
    // validate the product 
-   if(!productId){
+   if(!Id){
     return res.status(404).json({
      success: false,
-     message: "No product found"
+     message: "No cartItem found"
     })
   }
-   const updatedUser = await User.findByIdAndUpdate(userId, { $pull: {mycart: Id}},{new:true})
+
+  const updatedUser = await User.findByIdAndUpdate(userId, { $pull: {mycart: Id}},{new:true})
   return res.status(200).json({
    success:true, 
    message:"removed from cart", 
-   dat:updatedUser
+   data:updatedUser
   })
  }
 
@@ -421,20 +432,30 @@ exports.decreaseQuantity = async(req , res) => {
         cartItemId, 
         { $inc: { quantity: -1 } },
         { new: true }
-      ); 
+      );
       return res.status(200).json({
         success:true, 
         message:"Quantity decreased"
        })
       }
-   else{
-    const deltedItem = await CartItem.findByIdAndDelete(cartItemId); 
-    return res.status(200).json({
-      success:true, 
-      message:"Item deleted "
-     })
-   }
-  }
+      else{
+        const userId = req.user.id ; 
+        if(!userId)
+        {
+          console.log("no user found");
+
+          return res.status(500).json({
+            success:false , 
+            message:"no user found"
+          })
+        }
+        const updatedUser = await User.findByIdAndUpdate(userId, { $pull: {mycart: cartItemId}},{new:true})
+        return res.status(200).json({
+          success:true , 
+          message:"Updated user"
+        })
+      }
+    }
   catch(err){
      console.log(err); 
      return res.status(500).json({
@@ -633,7 +654,7 @@ exports.searchProduct = async(req, res)=>{
    console.log(searchParam)
      const result = await Product.find({
       $or:[
-        { "title": { $regex:searchParam}, $options: 'i' },
+        { "title": { $regex:searchParam, $options: 'i' }},
         { "description": {$regex:searchParam, $options: 'i'} },
         { "auction": { $regex:searchParam ,$options: 'i'} }, 
         { "material": {$regex:searchParam,$options: 'i'} }, 
