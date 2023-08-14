@@ -633,10 +633,10 @@ exports.searchProduct = async(req, res)=>{
    console.log(searchParam)
      const result = await Product.find({
       $or:[
-        { "title": { $regex:searchParam} },
-        { "description": {$regex:searchParam } },
-        { "auction": { $regex:searchParam } }, 
-        { "material": {$regex:searchParam} }, 
+        { "title": { $regex:searchParam}, $options: 'i' },
+        { "description": {$regex:searchParam, $options: 'i'} },
+        { "auction": { $regex:searchParam ,$options: 'i'} }, 
+        { "material": {$regex:searchParam,$options: 'i'} }, 
       ]
      }).populate("photos");
     
