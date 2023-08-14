@@ -144,15 +144,18 @@ const resetPassword = async(req, res)=>{
            })
        }
        const recentOtp = await OTP.find({ email }).sort({ createdAt: -1 }).limit(1);
-      if(otp!=recentOtp)
+       console.log(otp); 
+       console.log("otp is" ,recentOtp[0].otp);
+      if(otp!=recentOtp[0].otp)
       {
          return res.status(400).json({
             success:false , 
             message:"otp not ,match"
          })
       }
+      console.log("here");
       const hashedPsw = await bcrypt.hash(password, 10); 
-      const NewUser = await User.findOneAndUpdate({email:email},{
+      const NewUser = await userModel.findOneAndUpdate({email:email},{
          password:hashedPsw
        }, {new:true});
 
