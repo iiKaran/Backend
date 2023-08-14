@@ -371,10 +371,19 @@ exports.getCart = async( req , res)=>{
       },
     },
   ]);
+  let result = []
+  CartDetails1.mycart.forEach(element => {
+     if(element.quantity>0)
+     {
+      result.push(element);
+     }
+  });
+  
+  
   return res.status(200).json({
    success:true , 
    message:"get cart details", 
-   data1:CartDetails1.mycart,
+   data1:result,
   })
  }
  catch(err){
